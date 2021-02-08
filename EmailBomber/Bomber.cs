@@ -1,6 +1,7 @@
 ﻿using AngleSharp;
 using AngleSharp.Dom;
 using AngleSharp.Io;
+using NLog;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -78,7 +79,6 @@ namespace EmailBomber
         }
     }
 
-
     /// <summary>
     /// fix-price.ru
     /// </summary>
@@ -94,9 +94,12 @@ namespace EmailBomber
             var documentRequest = DocumentRequest.PostAsUrlencoded(new Url("https://fix-price.ru/ajax/confirm_mail.php"),
                 postBody);//POST запрос к заданному Url'у и телом запроса
             #endregion
-
             var result = await context.OpenAsync(documentRequest);//Получаем результат нашего запроса на отправку письма (при готовности)
-            Console.WriteLine($"{unicodeEncode(result.Source.Text)}");//Выводим результат отправки
+            string textResponse = unicodeEncode(result.Source.Text);
+            if (textResponse == "{\"status\":1}")
+                BomberLogger.GetLogger().Info($"fix-price.ru [Успешно]");
+            else
+                BomberLogger.GetLogger().Info($"fix-price.ru [Провал]");
             return result;//Возвращаем результат отправки
         }
     }
