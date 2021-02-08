@@ -7,8 +7,9 @@ namespace EmailBomber
     {
         static void Main(string[] args)
         {
-            Bomber bomber = new Bomber("kavkazkoe@yandex.ru");
-            var result = bomber.Bomb();
+            Bomber bomber = BomberFactory.FullBomber("kavkazkoe@yandex.ru");
+            bomber.Bomb().Wait();
+
         }
     }
 }

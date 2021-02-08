@@ -33,6 +33,18 @@ namespace EmailBomber
         public abstract Task<IDocument> SendEmail(string email);
     }
 
+    static class BomberFactory
+    {
+        public static Bomber FullBomber(string email)
+        {
+            Bomber fullBomber = new Bomber(email);
+            fullBomber.emailSendsServices.Add(new FixPriceSender());
+            return fullBomber;
+        }
+    }
+
+
+
     class FixPriceSender : EmailSender
     {
         public override async Task<IDocument> SendEmail(string email)
@@ -52,7 +64,7 @@ namespace EmailBomber
     class Bomber
     {
         public string Email { get; set; }
-        List<IEmailSendService> emailSendsServices = new List<IEmailSendService>();
+        public List<IEmailSendService> emailSendsServices = new List<IEmailSendService>();
 
         public Bomber(string email)
         {
